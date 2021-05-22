@@ -54,6 +54,9 @@ cross_fields_data = {1: [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53, 54, 55,
 choosen_fields_X = []
 chosen_fields_O = []
 
+nick1 = ''
+nick2 = ''
+
 
 def list_to_string(_list):
     """
@@ -175,17 +178,21 @@ def clear_screen():
     """
     system('cls')
 
+clear_screen()
+nick1 = input('Enter player one nickname(X): ') + ','
+nick2 = input('Enter player two nickname(O): ') + ','
 
-# main loop
 while True:
     clear_screen()
     print(list_to_string(dynamic_game_board))
-    field_number = input('Select a field(X): ')
+    print(nick1, end=' ')
+    field_number = input('please select a field(X): ')
     choose_field(field_number, symbol='X')
     check_win()
     clear_screen()
     print(list_to_string(dynamic_game_board))
-    field_number = input('Select a field(O): ')
+    print(nick2, end=' ')
+    field_number = input('please select a field(O): ')
     choose_field(field_number, symbol='O')
     check_win()
     clear_screen()
