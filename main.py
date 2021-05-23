@@ -1,4 +1,5 @@
 from os import system
+from platform import system as os_name
 from time import sleep
 
 static_game_board = """\
@@ -152,14 +153,14 @@ def check_win():
         clear_screen()
         cross_winning_fields(position)
         print(list_to_string(dynamic_game_board))
-        print('X won!!!')
+        print(nick1, 'won!!!')
         input('\nPress Enter to continue...')
         exit(-1)
     elif decision == 1:
         clear_screen()
         cross_winning_fields(position)
         print(list_to_string(dynamic_game_board))
-        print('Y won!!!')
+        print(nick2, 'won!!!')
         input('\nPress Enter to continue...')
         exit(-1)
     elif decision == 0 and len(choosen_fields_X) + len(chosen_fields_O) == 9:
@@ -176,7 +177,12 @@ def clear_screen():
 
     :return: void function
     """
-    system('cls')
+    if os_name() == 'Windows':
+        system('cls')
+    elif os_name() == 'Linux':
+        system('clear')
+    elif os_name() == 'Darwin':
+        system('clear')
 
 clear_screen()
 nick1 = input('Enter player one nickname(X): ') + ','
