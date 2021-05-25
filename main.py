@@ -59,6 +59,35 @@ nick1 = ''
 nick2 = ''
 
 
+def nickname_input(nick, player_symbol):
+    """
+    Function to make nicknames feature
+    better and more accurate
+
+    :param nick: player nickname
+    :param player_symbol: symbol on game board, for example 'X'
+    :return: nick
+    """
+    nick = ''
+    i = 0
+
+    while True:
+        clear_screen()
+        print('Enter nick for player with', player_symbol)
+        nick = input('Enter nick: ') 
+        clear_screen()
+        if nick == '' and i != 0: 
+            print("Nickname can't be empty")
+            sleep(0.5)
+            clear_screen()
+            continue
+        elif nick != '':
+            clear_screen()
+            break
+        i += 1
+
+    return nick + ','
+
 def list_to_string(_list):
     """
     Convert any string converted
@@ -185,8 +214,9 @@ def clear_screen():
         system('clear')
 
 clear_screen()
-nick1 = input('Enter player one nickname(X): ') + ','
-nick2 = input('Enter player two nickname(O): ') + ','
+
+nick1 = nickname_input(nick1, 'X')
+nick2 = nickname_input(nick2, 'O')
 
 while True:
     clear_screen()
