@@ -112,7 +112,7 @@ def choose_field(number, symbol):
     :return: void function
     """
 
-    while type(number) != int or number not in range(1, 10):
+    while isinstance(number, str) or number not in range(1, 10):
         try:
             number = int(number)
             for fields in fields_data[number]:
