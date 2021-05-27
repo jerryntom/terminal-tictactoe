@@ -55,43 +55,38 @@ cross_fields_data = {1: [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53, 54, 55,
 choosen_fields_X = []
 chosen_fields_O = []
 
-nick1 = ''
-nick2 = ''
 
-
-def nickname_input(nick, player_symbol):
+def nickname_input(player_symbol):
     """
     Function to make nicknames feature
     better and more accurate
 
-    :param nick: player nickname
     :param player_symbol: symbol on game board, for example 'X'
     :return: nick
     """
     nick = ''
-    i = 0
 
     while True:
         clear_screen()
         print('Enter nick for player with', player_symbol)
         nick = input('Enter nick: ') 
         clear_screen()
-        if nick == '' and i != 0: 
-            print("Nickname can't be empty")
+        if nick == '':
+            print("Nickname can't be empty!")
             sleep(0.5)
             clear_screen()
             continue
         elif nick != '':
             clear_screen()
             break
-        i += 1
 
-    return nick + ','
+    return nick 
+
 
 def list_to_string(_list):
     """
     Convert any string converted
-    to list back to string easily :)
+    to list back to string easily 
 
     :param _list: list to convert
     :return: beautiful string recovered from list
@@ -213,21 +208,30 @@ def clear_screen():
     elif os_name() == 'Darwin':
         system('clear')
 
-clear_screen()
 
-nick1 = nickname_input(nick1, 'X')
-nick2 = nickname_input(nick2, 'O')
+clear_screen()
+nick1 = nickname_input('X')
+
+while True: 
+    nick2 = nickname_input('O')
+    if nick2 == nick1: 
+        print("Nicknames can't be the same!")
+        sleep(0.5)
+        clear_screen()
+        continue 
+    else:
+        break 
 
 while True:
     clear_screen()
     print(list_to_string(dynamic_game_board))
-    print(nick1, end=' ')
+    print(nick1, end=', ')
     field_number = input('please select a field(X): ')
     choose_field(field_number, symbol='X')
     check_win()
     clear_screen()
     print(list_to_string(dynamic_game_board))
-    print(nick2, end=' ')
+    print(nick2, end=', ')
     field_number = input('please select a field(O): ')
     choose_field(field_number, symbol='O')
     check_win()
