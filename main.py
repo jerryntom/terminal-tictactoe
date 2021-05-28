@@ -1,3 +1,4 @@
+from random import randint
 from os import system
 from platform import system as os_name
 from time import sleep
@@ -16,6 +17,14 @@ static_game_board = """\
 |  7  |  8  |  9  |
 |     |     |     |
  ----- ----- ----- """
+
+banner = """\
+___________.__     ___________           ___________            
+\__    ___/|__| ___\__    ___/____    ___\__    ___/___   ____  
+  |    |   |  |/ ___\|    |  \__  \ _/ ___\|    | /  _ \_/ __ \ 
+  |    |   |  \  \___|    |   / __ \\  \___ |    |(  <_> )  ___/ 
+  |____|   |__|\___  >____|  (____  /\___  >____| \____/ \___  >
+                    \/             \/     \/                  \/ """
 
 # used to manipulate static game board
 dynamic_game_board = list(static_game_board)
@@ -42,7 +51,7 @@ winning_positions = {1: [1, 2, 3],
                      8: [3, 5, 7]}
 
 # data used for visual help where there is win
-cross_fields_data = {1: [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53, 54, 55, 57],
+cross_fields_data = {1: [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53, 54, 55, 56],
                      2: [119, 120, 121, 122, 123, 125, 126, 127, 128, 129, 131, 132, 133, 134, 135],
                      3: [198, 199, 200, 201, 202, 204, 205, 206, 207, 208, 210, 211, 212, 213, 214],
                      4: [22, 42, 62, 101, 121, 141, 180, 200, 220],
@@ -52,7 +61,7 @@ cross_fields_data = {1: [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53, 54, 55,
                      8: [35, 54, 73, 108, 127, 146, 181, 200, 219]}
 
 
-choosen_fields_X = []
+chosen_fields_X = []
 chosen_fields_O = []
 
 
@@ -107,17 +116,17 @@ def choose_field(number, symbol):
     :return: void function
     """
 
-    while isinstance(number, str) or number not in range(1, 10):
+    while True:
         try:
             number = int(number)
             for fields in fields_data[number]:
                 dynamic_game_board[fields] = symbol
             if symbol == 'X':
-                choosen_fields_X.append(number)
+                chosen_fields_X.append(number)
             elif symbol == 'O':
                 chosen_fields_O.append(number)
         except ValueError:
-            print('You have to enter a number!')
+            print('You have to enter a number')
             sleep(0.5)
             clear_screen()
             print(list_to_string(dynamic_game_board))
@@ -128,8 +137,10 @@ def choose_field(number, symbol):
             clear_screen()
             print(list_to_string(dynamic_game_board))
             number = input('Select a field({}): '.format(symbol))
-
-
+        else:
+            break 
+        
+     
 def cross_winning_fields(position_number):
     """
     Visual help for showing winning position
@@ -160,7 +171,7 @@ def check_win():
     """
     decision = 0
     position = 0
-    set_fields_x = set(choosen_fields_X)
+    set_fields_x = set(chosen_fields_X)
     set_fields_o = set(chosen_fields_O)
 
     for i in range(1, 9):
@@ -187,12 +198,23 @@ def check_win():
         print(nick2, 'won!!!')
         input('\nPress Enter to continue...')
         exit(-1)
-    elif decision == 0 and len(choosen_fields_X) + len(chosen_fields_O) == 9:
+    elif decision == 0 and len(chosen_fields_X) + len(chosen_fields_O) == 9:
         clear_screen()
         print(list_to_string(dynamic_game_board))
         print('Tie!!!')
         input('\nPress Enter to continue...')
         exit(-1)
+
+
+def computer_move():
+    while True :
+        random_move = randint(1, 9)
+        if random_move in chosen_fields_O or random_move in chosen_fields_X: 
+            continue 
+        else:
+            break 
+    
+    return random_move
 
 
 def clear_screen():
@@ -209,30 +231,64 @@ def clear_screen():
         system('clear')
 
 
-clear_screen()
-nick1 = nickname_input('X')
-
-while True: 
-    nick2 = nickname_input('O')
-    if nick2 == nick1: 
-        print("Nicknames can't be the same!")
+while True:
+    clear_screen()
+    print(banner)
+    print('Game mode (1): player vs player')
+    print('Game mode (2): player vs computer')
+    gamemode = input('Choose a game mode: ')
+    if gamemode not in['1', '2']:
+        print('You have to choose game mode (1) or (2)')
         sleep(0.5)
-        clear_screen()
-        continue 
+        continue
     else:
         break 
 
-while True:
+if gamemode == '1': 
+    nick1 = nickname_input('X')
+
+    while True: 
+        nick2 = nickname_input('O')
+        if nick2 == nick1: 
+            print("Nicknames can't be the same!")
+            sleep(0.5)
+            clear_screen()
+            continue 
+        else:
+            break 
+
+    while True:
+        clear_screen()
+        print(list_to_string(dynamic_game_board))
+        print(nick1, end=', ')
+        field_number = input('please select a field(X): ')
+        choose_field(field_number, 'X')
+        check_win()
+        clear_screen()
+        print(list_to_string(dynamic_game_board))
+        print(nick2, end=', ')
+        field_number = input('please select a field(O): ')
+        choose_field(field_number, 'O')
+        check_win()
+        clear_screen()
+
+elif gamemode == '2': 
     clear_screen()
-    print(list_to_string(dynamic_game_board))
-    print(nick1, end=', ')
-    field_number = input('please select a field(X): ')
-    choose_field(field_number, symbol='X')
-    check_win()
-    clear_screen()
-    print(list_to_string(dynamic_game_board))
-    print(nick2, end=', ')
-    field_number = input('please select a field(O): ')
-    choose_field(field_number, symbol='O')
-    check_win()
-    clear_screen()
+
+    nick1 = nickname_input('X')
+    nick2 = 'Computer'
+    
+    while True: 
+        clear_screen()
+        print(list_to_string(dynamic_game_board))
+        print(nick1, end=', ')
+        field_number = input('please select a field(X): ')
+        choose_field(field_number, 'X')
+        check_win()
+        clear_screen()
+        print(list_to_string(dynamic_game_board))
+        print("Now it's time for computer move")
+        sleep(1)
+        choose_field(computer_move(), 'O')
+        check_win()
+        clear_screen()
