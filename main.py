@@ -207,6 +207,11 @@ def check_win():
 
 
 def computer_move():
+    """
+    Generates random computer move 
+
+    :return: generated computer move 
+    """
     while True :
         random_move = randint(1, 9)
         if random_move in chosen_fields_O or random_move in chosen_fields_X: 
@@ -244,9 +249,9 @@ while True:
     else:
         break 
 
-if gamemode == '1': 
-    nick1 = nickname_input('X')
+nick1 = nickname_input('X')
 
+if gamemode == '1':
     while True: 
         nick2 = nickname_input('O')
         if nick2 == nick1: 
@@ -256,39 +261,25 @@ if gamemode == '1':
             continue 
         else:
             break 
+else: 
+    nick2 = 'Computer'
 
-    while True:
-        clear_screen()
-        print(list_to_string(dynamic_game_board))
-        print(nick1, end=', ')
-        field_number = input('please select a field(X): ')
-        choose_field(field_number, 'X')
-        check_win()
-        clear_screen()
-        print(list_to_string(dynamic_game_board))
+while True:
+    clear_screen()
+    print(list_to_string(dynamic_game_board))
+    print(nick1, end=', ')
+    field_number = input('please select a field(X): ')
+    choose_field(field_number, 'X')
+    check_win()
+    clear_screen()
+    print(list_to_string(dynamic_game_board))
+    if gamemode == '1':
         print(nick2, end=', ')
         field_number = input('please select a field(O): ')
         choose_field(field_number, 'O')
-        check_win()
-        clear_screen()
-
-elif gamemode == '2': 
-    clear_screen()
-
-    nick1 = nickname_input('X')
-    nick2 = 'Computer'
-    
-    while True: 
-        clear_screen()
-        print(list_to_string(dynamic_game_board))
-        print(nick1, end=', ')
-        field_number = input('please select a field(X): ')
-        choose_field(field_number, 'X')
-        check_win()
-        clear_screen()
-        print(list_to_string(dynamic_game_board))
+    else: 
         print("Now it's time for computer move")
         sleep(1)
         choose_field(computer_move(), 'O')
-        check_win()
-        clear_screen()
+    check_win()
+    clear_screen()
