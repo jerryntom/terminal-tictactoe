@@ -209,7 +209,7 @@ def check_win():
         print('Want to play again?')
         play_again = input('Type (y/n): ') 
         if play_again == 'y':
-            return decision 
+            return 'y'
         elif play_again == 'n': 
             input("Press Enter to continue...") 
             exit(-1)
@@ -283,7 +283,7 @@ while True:
         print(nick1, end=', ')
         field_number = input('please select a field(X): ')
         choose_field(field_number, 'X')
-        if check_win() in [-1, 1, 2]: 
+        if check_win() == 'y': 
             break 
         clear_screen()
         print(list_to_string(dynamic_game_board))
@@ -295,5 +295,5 @@ while True:
             print("Now it's time for computer move")
             sleep(1)
             choose_field(computer_move(), 'O')
-        if check_win() in [-1, 1, 2]: 
+        if check_win() == 'y': 
             break 
