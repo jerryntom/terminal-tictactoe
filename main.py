@@ -109,9 +109,19 @@ def choose_field(number, symbol):
     :return: void function
     """
 
+    number = int(number)
+
     while True:
         try:
-            number = int(number)
+            while True:
+                if number in chosen_fields_X or number in chosen_fields_O:
+                    print("You can't choose already chosen field")
+                    sleep(0.5)
+                    clear_screen()
+                    print(list_to_string(dynamic_game_board))
+                    number = int(input('Select a field({}): '.format(symbol)))
+                else:
+                    break 
             for fields in fields_data[number]:
                 dynamic_game_board[fields] = symbol
             if symbol == 'X':
@@ -123,13 +133,13 @@ def choose_field(number, symbol):
             sleep(0.5)
             clear_screen()
             print(list_to_string(dynamic_game_board))
-            number = input('Select a field({}): '.format(symbol))
+            number = int(input('Select a field({}): '.format(symbol)))
         except KeyError:
             print('You have to enter a number in range from 1 to 9')
             sleep(0.5)
             clear_screen()
             print(list_to_string(dynamic_game_board))
-            number = input('Select a field({}): '.format(symbol))
+            number = int(input('Select a field({}): '.format(symbol)))
         else:
             break 
         
@@ -176,6 +186,9 @@ def check_win():
         elif set_positions.intersection(set_fields_o) == set_positions:
             decision = 1
             break
+        elif len(chosen_fields_X) + len(chosen_fields_O) == 9:
+            decision = 0
+            break 
 
     if decision == -1:
         clear_screen()
