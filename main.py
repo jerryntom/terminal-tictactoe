@@ -211,8 +211,11 @@ def check_win():
         if play_again == 'y':
             return 'y'
         elif play_again == 'n': 
-            input("Press Enter to continue...") 
-            exit(-1)
+            try:
+                input("Press Enter to continue...") 
+                exit(-1)
+            except Exception: 
+                exit(-1)
         
 
 def computer_move():
