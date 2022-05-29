@@ -1,9 +1,9 @@
 from random import randint
 from os import system
-from platform import system as os_name
+from platform import system as osName
 from time import sleep
 
-static_game_board = """\
+staticGameBoard = """\
  ----- ----- -----
 |     |     |     |
 |  1  |  2  |  3  |
@@ -27,7 +27,7 @@ ___________.__     ___________           ___________
                     \/             \/     \/                  \/ """
 
 # game board cells of each field
-fields_data = {1: [20, 21, 22, 23, 24, 40, 41, 42, 43, 44, 60, 61, 62, 63, 64],
+fieldsPositions = {1: [20, 21, 22, 23, 24, 40, 41, 42, 43, 44, 60, 61, 62, 63, 64],
                2: [26, 27, 28, 29, 30, 46, 47, 48, 49, 50, 66, 67, 68, 69, 70],
                3: [32, 33, 34, 35, 36, 52, 53, 54, 55, 56, 72, 73, 74, 75, 76],
                4: [99, 100, 101, 102, 103, 119, 120, 121, 122, 123, 139, 140, 141, 142, 143],
@@ -37,8 +37,8 @@ fields_data = {1: [20, 21, 22, 23, 24, 40, 41, 42, 43, 44, 60, 61, 62, 63, 64],
                8: [184, 185, 186, 187, 188, 204, 205, 206, 207, 208, 224, 225, 226, 227, 228],
                9: [190, 191, 192, 193, 194, 210, 211, 212, 213, 214, 230, 231, 232, 233, 234]}
 
-# possible winning situations
-winning_positions = {1: [1, 2, 3],
+# possible winning fields
+winningScenarios = {1: [1, 2, 3],
                      2: [4, 5, 6],
                      3: [7, 8, 9],
                      4: [1, 4, 7],
@@ -47,8 +47,8 @@ winning_positions = {1: [1, 2, 3],
                      7: [1, 5, 9],
                      8: [3, 5, 7]}
 
-# data used for visual help where there is win
-cross_fields_data = {1: [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53, 54, 55, 56],
+# data used for visual effect when there is win
+crossFieldWin = {1: [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53, 54, 55, 56],
                      2: [119, 120, 121, 122, 123, 125, 126, 127, 128, 129, 131, 132, 133, 134, 135],
                      3: [198, 199, 200, 201, 202, 204, 205, 206, 207, 208, 210, 211, 212, 213, 214],
                      4: [22, 42, 62, 101, 121, 141, 180, 200, 220],
@@ -58,7 +58,7 @@ cross_fields_data = {1: [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53, 54, 55,
                      8: [35, 54, 73, 108, 127, 146, 181, 200, 219]}
 
 
-def nickname_input(player_symbol):
+def nicknameInput(playerSymbol):
     """
     Function to make nicknames feature
     better and more accurate
@@ -69,38 +69,34 @@ def nickname_input(player_symbol):
     nick = ''
 
     while True:
-        clear_screen()
-        print('Enter nick for player with', player_symbol)
+        clearScreen()
+        print('Enter nick for player with', playerSymbol)
         nick = input('Enter nick: ') 
-        clear_screen()
+        clearScreen()
         if nick == '':
             print("Nickname can't be empty!")
             sleep(0.5)
-            clear_screen()
+            clearScreen()
             continue
         elif nick != '':
-            clear_screen()
+            clearScreen()
             break
 
     return nick 
 
 
-def list_to_string(_list):
+def listToString(listForm):
     """
-    Convert any string converted
-    to list back to string easily 
+    Restores game board to string form 
 
-    :param _list: list to convert
-    :return: beautiful string recovered from list
+    :return str_data
     """
-    string = ''
-    for char in _list:
-        string += ''.join(char)
 
-    return string
+    strData = ''.join(listForm)
+    return strData
 
 
-def choose_field(number, symbol):
+def chooseField(number, symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO):
     """
     Function to handle field selection
 
@@ -114,37 +110,37 @@ def choose_field(number, symbol):
     while True:
         try:
             while True:
-                if number in chosen_fields_X or number in chosen_fields_O:
+                if number in chosenFieldsX or number in chosenFieldsO:
                     print("You can't choose already chosen field")
                     sleep(0.5)
-                    clear_screen()
-                    print(list_to_string(dynamic_game_board))
+                    clearScreen()
+                    print(listToString(dynamicGameBoard))
                     number = int(input('Select a field({}): '.format(symbol)))
                 else:
                     break 
-            for fields in fields_data[number]:
-                dynamic_game_board[fields] = symbol
+            for fields in fieldsPositions[number]:
+                dynamicGameBoard[fields] = symbol
             if symbol == 'X':
-                chosen_fields_X.append(number)
+                chosenFieldsX.append(number)
             elif symbol == 'O':
-                chosen_fields_O.append(number)
+                chosenFieldsO.append(number)
         except ValueError:
             print('You have to enter a number')
             sleep(0.5)
-            clear_screen()
-            print(list_to_string(dynamic_game_board))
+            clearScreen()
+            print(listToString(dynamicGameBoard))
             number = int(input('Select a field({}): '.format(symbol)))
         except KeyError:
             print('You have to enter a number in range from 1 to 9')
             sleep(0.5)
-            clear_screen()
-            print(list_to_string(dynamic_game_board))
+            clearScreen()
+            print(listToString(dynamicGameBoard))
             number = int(input('Select a field({}): '.format(symbol)))
         else:
             break 
         
      
-def cross_winning_fields(position_number):
+def markWinningFields(positionNumber, dynamicGameBoard):
     """
     Visual help for showing winning position
     on game board
@@ -152,20 +148,20 @@ def cross_winning_fields(position_number):
     :param position_number: number of winning position
     :return: void function
     """
-    if position_number in [1, 2, 3]:
+    if positionNumber in [1, 2, 3]:
         symbol = '-'
-    elif position_number in [4, 5, 6]:
+    elif positionNumber in [4, 5, 6]:
         symbol = '|'
-    elif position_number == 7:
+    elif positionNumber == 7:
         symbol = "\\"
     else:
         symbol = '/'
 
-    for data in cross_fields_data[position_number]:
-        dynamic_game_board[data] = symbol
+    for data in crossFieldWin[positionNumber]:
+        dynamicGameBoard[data] = symbol
 
 
-def check_win():
+def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick1, nick2):
     """
     Checks if one of the sides already won
     or if there is tie
@@ -174,11 +170,11 @@ def check_win():
     """
     decision = -2
     position = 0
-    set_fields_x = set(chosen_fields_X)
-    set_fields_o = set(chosen_fields_O)
+    set_fields_x = set(chosenFieldsX)
+    set_fields_o = set(chosenFieldsO)
 
     for i in range(1, 9):
-        set_positions = set(winning_positions[i])
+        set_positions = set(winningScenarios[i])
         position += 1
         if set_positions.intersection(set_fields_x) == set_positions:
             decision = -1
@@ -186,39 +182,44 @@ def check_win():
         elif set_positions.intersection(set_fields_o) == set_positions:
             decision = 1
             break
-        elif len(chosen_fields_X) + len(chosen_fields_O) == 9:
+        elif len(chosenFieldsX) + len(chosenFieldsO) == 9:
             decision = 0
             break 
 
     if decision == -1:
-        clear_screen()
-        cross_winning_fields(position)
-        print(list_to_string(dynamic_game_board))
+        clearScreen()
+        markWinningFields(position, dynamicGameBoard)
+        print(listToString(dynamicGameBoard))
         print(nick1, 'won!!!')
     elif decision == 1:
-        clear_screen()
-        cross_winning_fields(position)
-        print(list_to_string(dynamic_game_board))
+        clearScreen()
+        markWinningFields(position, dynamicGameBoard)
+        print(listToString(dynamicGameBoard))
         print(nick2, 'won!!!')
-    elif decision == 0 and len(chosen_fields_X) + len(chosen_fields_O) == 9:
-        clear_screen()
-        print(list_to_string(dynamic_game_board))
+    elif decision == 0 and len(chosenFieldsX) + len(chosenFieldsO) == 9:
+        clearScreen()
+        print(listToString(dynamicGameBoard))
         print('Tie!!!')
     
     if decision in [-1, 0, 1]:
-        print('Want to play again?')
-        play_again = input('Type (y/n): ') 
-        if play_again == 'y':
-            return 'y'
-        elif play_again == 'n': 
-            try:
-                input("Press Enter to continue...") 
-                exit(-1)
-            except Exception: 
-                exit(-1)
-        
+        while 1:
+            final_choice = input(("What's next? (p)lay again\\(m)enu\\(e)xit: "))
 
-def computer_move():
+            if final_choice == 'p':
+                return 'p'
+            elif final_choice == 'm': 
+                return 'm'
+            elif final_choice == 'e':
+                return 'e'
+            else:
+                clearScreen()
+                print("Choose (p)lay again\\(m)enu\\(e)xit")
+                sleep(2)
+                clearScreen()
+                break 
+            
+        
+def computerMove(chosenFieldsX, chosenFieldsO):
     """
     Generates random computer move 
 
@@ -226,7 +227,7 @@ def computer_move():
     """
     while True :
         random_move = randint(1, 9)
-        if random_move in chosen_fields_O or random_move in chosen_fields_X: 
+        if random_move in chosenFieldsX or random_move in chosenFieldsO: 
             continue 
         else:
             break 
@@ -234,69 +235,91 @@ def computer_move():
     return random_move
 
 
-def clear_screen():
+def clearScreen():
     """
     It just clears screen, u know...
 
     :return: void function
     """
-    if os_name() == 'Windows':
+    if osName() == 'Windows':
         system('cls')
-    elif os_name() == 'Linux':
+    elif osName() == 'Linux':
         system('clear')
-    elif os_name() == 'Darwin':
+    elif osName() == 'Darwin':
         system('clear')
 
-while True:
-    dynamic_game_board = list(static_game_board)
-    chosen_fields_X = []
-    chosen_fields_O = []
 
-    while True:
-        clear_screen()
+def start():
+    """
+    Game beginning handler.
+
+    - menu 
+    - data input
+
+    return: None 
+    """
+    dynamicGameBoard = list(staticGameBoard)
+    chosenFieldsX = []
+    chosenFieldsO = []
+
+    while 1:
+        clearScreen()
         print(banner)
         print('Game mode (1): player vs player')
         print('Game mode (2): player vs computer')
-        game_mode = input('Choose a game mode: ')
-        if game_mode not in['1', '2']:
+        gameMode = input('Choose a game mode: ')
+        if gameMode not in['1', '2']:
             print('You have to choose game mode (1) or (2)')
             sleep(0.5)
             continue
         else:
             break 
-
-    nick1 = nickname_input('X')
-
-    if game_mode == '1':
-        while True: 
-            nick2 = nickname_input('O')
+    nick1 = nicknameInput('X')
+    if gameMode == '1':
+        while 1: 
+            nick2 = nicknameInput('O')
             if nick2 == nick1: 
                 print("Nicknames can't be the same!")
                 sleep(0.5)
-                clear_screen()
+                clearScreen()
                 continue 
             else:
                 break 
     else: 
         nick2 = 'Computer'
+    
+    gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
+    
 
-    while True:
-        clear_screen()
-        print(list_to_string(dynamic_game_board))
+def gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2):
+    """
+    Game logic helper, processes all actions.
+    Transmits certain things to certain functions.
+    
+    return: None 
+    """
+
+    while 1:
+        clearScreen()
+        print(listToString(dynamicGameBoard))
         print(nick1, end=', ')
-        field_number = input('please select a field(X): ')
-        choose_field(field_number, 'X')
-        if check_win() == 'y': 
-            break 
-        clear_screen()
-        print(list_to_string(dynamic_game_board))
-        if game_mode == '1':
+        fieldNumber = input('please select a field(X): ')
+        chooseField(fieldNumber, 'X', dynamicGameBoard, chosenFieldsX, chosenFieldsO)
+        if checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick1, nick2)  == 'm': 
+            start()
+        clearScreen()
+        print(listToString(dynamicGameBoard))
+        if gameMode == '1':
             print(nick2, end=', ')
-            field_number = input('please select a field(O): ')
-            choose_field(field_number, 'O')
-        elif game_mode == '2': 
+            fieldNumber = input('please select a field(O): ')
+            chooseField(fieldNumber, 'O', dynamicGameBoard, chosenFieldsX, chosenFieldsO)
+        elif gameMode == '2': 
             print("Now it's time for computer move")
             sleep(1)
-            choose_field(computer_move(), 'O')
-        if check_win() == 'y': 
-            break 
+            chooseField(computerMove(chosenFieldsX, chosenFieldsO), 'O', dynamicGameBoard, chosenFieldsX, chosenFieldsO)
+        if checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick1, nick2) == 'm': 
+            break
+
+
+if __name__ == "__main__":
+    start()
