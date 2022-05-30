@@ -96,7 +96,42 @@ def listToString(listForm):
     return strData
 
 
-def chooseField(number, symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO):
+def chosenFieldValidation(symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick):
+    """
+    Validates chosen field to prevent occurrence of errors and crashing 
+
+    Returns:
+        fieldNumber (int): correct fieldNumber 
+    """
+    while 1:
+        while 1:
+            try:
+                clearScreen()
+                print(listToString(dynamicGameBoard))
+                print(nick, end=', ')
+                fieldNumber = int(input('please select a field({}): '.format(symbol)))
+
+                if fieldNumber not in range(1, 10):
+                    print("Can't choose field apart from range 1-9")
+                    sleep(0.5)
+                    break 
+                elif fieldNumber in chosenFieldsX or fieldNumber in chosenFieldsO:
+                    print("Can't choose already chosen field")
+                    sleep(0.5)
+                    break 
+            except ValueError:
+                print('You have to enter a number')
+                sleep(0.5)
+                break 
+            except Exception as e:
+                print('Error occured, wrong input')
+                sleep(0.5)
+                break 
+
+            return fieldNumber
+
+
+def chooseField(symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick):
     """
     Function to handle field selection
 
@@ -104,41 +139,20 @@ def chooseField(number, symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO):
     :param symbol: by default 'X' or 'O'
     :return: void function
     """
+    
+    if nick != "computer":
+        fieldNumber = chosenFieldValidation(symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick)
+    else:
+        print("Time for computer move")
+        fieldNumber = computerMove(chosenFieldsX, chosenFieldsO)
 
-    number = int(number)
+    for fields in fieldsPositions[fieldNumber]:
+        dynamicGameBoard[fields] = symbol
+    if symbol == 'X':
+        chosenFieldsX.append(fieldNumber)
+    elif symbol == 'O':
+        chosenFieldsO.append(fieldNumber)
 
-    while True:
-        try:
-            while True:
-                if number in chosenFieldsX or number in chosenFieldsO:
-                    print("You can't choose already chosen field")
-                    sleep(0.5)
-                    clearScreen()
-                    print(listToString(dynamicGameBoard))
-                    number = int(input('Select a field({}): '.format(symbol)))
-                else:
-                    break 
-            for fields in fieldsPositions[number]:
-                dynamicGameBoard[fields] = symbol
-            if symbol == 'X':
-                chosenFieldsX.append(number)
-            elif symbol == 'O':
-                chosenFieldsO.append(number)
-        except ValueError:
-            print('You have to enter a number')
-            sleep(0.5)
-            clearScreen()
-            print(listToString(dynamicGameBoard))
-            number = int(input('Select a field({}): '.format(symbol)))
-        except KeyError:
-            print('You have to enter a number in range from 1 to 9')
-            sleep(0.5)
-            clearScreen()
-            print(listToString(dynamicGameBoard))
-            number = int(input('Select a field({}): '.format(symbol)))
-        else:
-            break 
-        
      
 def markWinningFields(positionNumber, dynamicGameBoard):
     """
@@ -203,23 +217,23 @@ def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
     
     if decision in [-1, 0, 1]:
         while 1:
-            final_choice = input(("What's next? (p)lay again\\(m)enu\\(e)xit: "))
+            while 1:
+                final_choice = input(("What's next? (p)lay again\\(m)enu\\(e)xit: "))
 
-            if final_choice == 'p':
-                dynamicGameBoard = list(staticGameBoard)
-                chosenFieldsX = []
-                chosenFieldsO = []
-                gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
-            elif final_choice == 'm': 
-                start()
-            elif final_choice == 'e':
-                exit()
-            else:
-                clearScreen()
-                print("Choose (p)lay again\\(m)enu\\(e)xit")
-                sleep(2)
-                clearScreen()
-                break 
+                if final_choice == 'p':
+                    dynamicGameBoard = list(staticGameBoard)
+                    chosenFieldsX = []
+                    chosenFieldsO = []
+                    gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
+                elif final_choice == 'm': 
+                    start()
+                elif final_choice == 'e':
+                    exit()
+                else:
+                    print("Wrong choice! Choose again!")
+                    sleep(1)
+                    clearScreen()
+                    break 
             
         
 def computerMove(chosenFieldsX, chosenFieldsO):
@@ -305,20 +319,16 @@ def gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
     while 1:
         clearScreen()
         print(listToString(dynamicGameBoard))
-        print(nick1, end=', ')
-        fieldNumber = input('please select a field(X): ')
-        chooseField(fieldNumber, 'X', dynamicGameBoard, chosenFieldsX, chosenFieldsO)
+        chooseField('X', dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick1)
         checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
         clearScreen()
         print(listToString(dynamicGameBoard))
         if gameMode == '1':
-            print(nick2, end=', ')
-            fieldNumber = input('please select a field(O): ')
-            chooseField(fieldNumber, 'O', dynamicGameBoard, chosenFieldsX, chosenFieldsO)
+            chooseField('O', dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick2)
         elif gameMode == '2': 
             print("Now it's time for computer move")
             sleep(1)
-            chooseField(computerMove(chosenFieldsX, chosenFieldsO), 'O', dynamicGameBoard, chosenFieldsX, chosenFieldsO)
+            chooseField('O', dynamicGameBoard, chosenFieldsX, chosenFieldsO, "computer")
         checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
 
 
