@@ -161,7 +161,7 @@ def markWinningFields(positionNumber, dynamicGameBoard):
         dynamicGameBoard[data] = symbol
 
 
-def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick1, nick2):
+def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2):
     """
     Checks if one of the sides already won
     or if there is tie
@@ -206,11 +206,14 @@ def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick1, nick2):
             final_choice = input(("What's next? (p)lay again\\(m)enu\\(e)xit: "))
 
             if final_choice == 'p':
-                return 'p'
+                dynamicGameBoard = list(staticGameBoard)
+                chosenFieldsX = []
+                chosenFieldsO = []
+                gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
             elif final_choice == 'm': 
-                return 'm'
+                start()
             elif final_choice == 'e':
-                return 'e'
+                exit()
             else:
                 clearScreen()
                 print("Choose (p)lay again\\(m)enu\\(e)xit")
@@ -305,8 +308,7 @@ def gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
         print(nick1, end=', ')
         fieldNumber = input('please select a field(X): ')
         chooseField(fieldNumber, 'X', dynamicGameBoard, chosenFieldsX, chosenFieldsO)
-        if checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick1, nick2)  == 'm': 
-            start()
+        checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
         clearScreen()
         print(listToString(dynamicGameBoard))
         if gameMode == '1':
@@ -317,8 +319,7 @@ def gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
             print("Now it's time for computer move")
             sleep(1)
             chooseField(computerMove(chosenFieldsX, chosenFieldsO), 'O', dynamicGameBoard, chosenFieldsX, chosenFieldsO)
-        if checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick1, nick2) == 'm': 
-            break
+        checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
 
 
 if __name__ == "__main__":
