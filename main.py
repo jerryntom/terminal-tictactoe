@@ -1,7 +1,9 @@
+from concurrent.futures import Executor
 from random import randint
 from os import system
 from platform import system as osName
 from time import sleep
+from typing import List
 
 staticGameBoard = """\
  ----- ----- -----
