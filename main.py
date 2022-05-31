@@ -184,21 +184,27 @@ def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
     """
     decision = -2
     position = 0
-    set_fields_x = set(chosenFieldsX)
-    set_fields_o = set(chosenFieldsO)
+    playerX = set(chosenFieldsX)
+    playerO = set(chosenFieldsO)
 
     for i in range(1, 9):
-        set_positions = set(winningScenarios[i])
+        if len(playerX) < 3 and len(playerO) < 3:
+            return None
+
+        winningPosition = set(winningScenarios[i])
         position += 1
-        if set_positions.intersection(set_fields_x) == set_positions:
+        winningMovesX = winningPosition.intersection(playerX)
+        winningMovesO = winningPosition.intersection(playerO)
+
+        if winningMovesX == winningPosition:
             decision = -1
             break
-        elif set_positions.intersection(set_fields_o) == set_positions:
+        elif winningMovesO == winningPosition:
             decision = 1
             break
-        elif len(chosenFieldsX) + len(chosenFieldsO) == 9:
-            decision = 0
-            break 
+    
+    if len(chosenFieldsX) + len(chosenFieldsO) == 9 and decision == -2:
+        decision = 0
 
     if decision == -1:
         clearScreen()
@@ -210,7 +216,7 @@ def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
         markWinningFields(position, dynamicGameBoard)
         print(listToString(dynamicGameBoard))
         print(nick2, 'won!!!')
-    elif decision == 0 and len(chosenFieldsX) + len(chosenFieldsO) == 9:
+    elif decision == 0:
         clearScreen()
         print(listToString(dynamicGameBoard))
         print('Tie!!!')
