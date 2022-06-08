@@ -1,8 +1,6 @@
 from random import randint
 from os import system
 from platform import system as osName
-from runpy import _ModifiedArgv0
-from sys import path
 from time import sleep
 
 staticGameBoard = """\
@@ -62,12 +60,14 @@ crossFieldWin = {1: [40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 52, 53, 54, 55, 56]
 
 def nicknameInput(playerSymbol):
     """
-    Function to make nicknames feature
-    better and more accurate
+    Validates nickname input
 
-    :param player_symbol: symbol on game board, for example 'X'
-    :return: nick
+    Args:
+        playerSymbol (string - one char): symbol used on field by certain player  
+
+    Returns: nick (string) - player nick 
     """
+
     nick = ''
 
     while True:
@@ -89,22 +89,34 @@ def nicknameInput(playerSymbol):
 
 def listToString(listForm):
     """
-    Restores game board to string form 
+    Converts game board from list form to string form
 
-    :return str_data
+    Args:
+        listForm (list): game board in list char by char 
+
+    Returns:
+        strData (string): game board in string form 
     """
 
-    strData = ''.join(listForm)
-    return strData
+    strForm = ''.join(listForm)
+    return strForm
 
 
 def chosenFieldValidation(symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick):
     """
-    Validates chosen field to prevent occurrence of errors and crashing 
+    Validates chosen field to prevent occurrence of errors and game crash
+
+    Args:
+        symbol (string - one char): player symbol
+        dynamicGameBoard (list): game board in list form 
+        chosenFieldsX (list): fields chosen by player with X
+        chosenFieldsO (list): fields chosen by player with O
+        nick (string): player nick
 
     Returns:
-        fieldNumber (int): correct fieldNumber 
+        fieldNumber (int): number of field on game board
     """
+
     while 1:
         while 1:
             try:
@@ -135,11 +147,17 @@ def chosenFieldValidation(symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO
 
 def chooseField(symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick):
     """
-    Function to handle field selection
+    Marks chosen field on the game board if chosen field had passed validation 
 
-    :param number: field number
-    :param symbol: by default 'X' or 'O'
-    :return: void function
+    Args:
+        symbol (string - one char): player symbol
+        dynamicGameBoard (list): game board in list form 
+        chosenFieldsX (list): fields chosen by player with X
+        chosenFieldsO (list): fields chosen by player with O
+        nick (string): player nick
+
+    Returns:
+        None
     """
     
     if nick != "computer":
@@ -155,14 +173,19 @@ def chooseField(symbol, dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick):
     elif symbol == 'O':
         chosenFieldsO.append(fieldNumber)
 
+    return None
+
      
 def markWinningFields(positionNumber, dynamicGameBoard):
     """
-    Visual help for showing winning position
-    on game board
+    If there is winning situation, marks winning fields on the game board
 
-    :param position_number: number of winning position
-    :return: void function
+    Args:
+        positionNumber (int): one of eight winning situation
+        dynamicGameBoard (list): game board in list form 
+
+    Returns:
+        None
     """
     if positionNumber in [1, 2, 3]:
         symbol = '-'
@@ -176,13 +199,23 @@ def markWinningFields(positionNumber, dynamicGameBoard):
     for data in crossFieldWin[positionNumber]:
         dynamicGameBoard[data] = symbol
 
+    return None
+
 
 def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2):
     """
-    Checks if one of the sides already won
-    or if there is tie
+    Checks if there is winning situation
 
-    :return: decision
+    Args:
+        dynamicGameBoard (list): game board in list form 
+        chosenFieldsX (list): fields chosen by player with X
+        chosenFieldsO (list): fields chosen by player with O
+        gameMode (int): game mode, 1 for player vs player, 2 for player vs computer
+        nick1 (string): player 1 nick (X)
+        nick2 (string): player 2 nick (O)
+
+    Returns:
+        None
     """
     decision = -2
     position = 0
@@ -243,6 +276,8 @@ def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
                     sleep(1)
                     clearScreen()
                     break 
+
+    return None
             
         
 def computerMove(chosenFieldsX, chosenFieldsO):
@@ -252,7 +287,12 @@ def computerMove(chosenFieldsX, chosenFieldsO):
     value for field in pathToWinO == 0 (field where X has winning move)
     -//- == 1 (field where O has winning move)
 
-    :return: computer move 
+    Args:
+        chosenFieldsX (list): fields chosen by player with X
+        chosenFieldsO (list): fields chosen by player with O
+
+    Returns:
+        move (int): computer move 
     """
     
     move = 0
@@ -304,15 +344,15 @@ def clearScreen():
     elif osName() == 'Darwin':
         system('clear')
 
+    return None
+
 
 def start():
     """
-    Game beginning handler.
-
-    - menu 
-    - data input
-
-    return: None 
+    Menu and game beginning handler
+    
+    Returns:
+        None
     """
     dynamicGameBoard = list(staticGameBoard)
     chosenFieldsX = []
@@ -331,6 +371,7 @@ def start():
         else:
             break 
     nick1 = nicknameInput('X')
+
     if gameMode == '1':
         while 1: 
             nick2 = nicknameInput('O')
@@ -345,14 +386,23 @@ def start():
         nick2 = 'Computer'
     
     gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
+    return None
     
 
 def gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2):
     """
-    Game logic helper, processes all actions.
-    Transmits certain things to certain functions.
-    
-    return: None 
+    Gameplay handler
+
+    Args:
+        dynamicGameBoard (list): game board in list form 
+        chosenFieldsX (list): fields chosen by player with X
+        chosenFieldsO (list): fields chosen by player with O
+        gameMode (int): game mode, 1 for player vs player, 2 for player vs computer
+        nick1 (string): player 1 nick (X)
+        nick2 (string): player 2 nick (O)
+
+    Returns:
+        None
     """
 
     while 1:
@@ -365,11 +415,13 @@ def gameplay(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
         if gameMode == '1':
             chooseField('O', dynamicGameBoard, chosenFieldsX, chosenFieldsO, nick2)
         elif gameMode == '2': 
-            print("Now it's time for computer move")
             sleep(1)
             chooseField('O', dynamicGameBoard, chosenFieldsX, chosenFieldsO, "computer")
         checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, nick2)
 
+    return None
+
 
 if __name__ == "__main__":
     start()
+
