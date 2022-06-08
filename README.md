@@ -1,4 +1,4 @@
-# terminal-tictactoe (08062022v1)
+# terminal-tictactoe (08062022v2)
 Basic terminal version of tic tac toe game
 
 This project doesn't need any additional module to work.
