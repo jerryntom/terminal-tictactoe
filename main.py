@@ -1,6 +1,8 @@
 from random import randint
 from os import system
 from platform import system as osName
+from runpy import _ModifiedArgv0
+from sys import path
 from time import sleep
 
 staticGameBoard = """\
@@ -224,6 +226,7 @@ def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
     if decision in [-1, 0, 1]:
         while 1:
             while 1:
+
                 final_choice = input(("What's next? (p)lay again\\(m)enu\\(e)xit: "))
 
                 if final_choice == 'p':
@@ -244,26 +247,56 @@ def checkWin(dynamicGameBoard, chosenFieldsX, chosenFieldsO, gameMode, nick1, ni
         
 def computerMove(chosenFieldsX, chosenFieldsO):
     """
-    Generates random computer move 
+    Generates computer move 
 
-    :return: generated computer move 
+    value for field in pathToWinO == 0 (field where X has winning move)
+    -//- == 1 (field where O has winning move)
+
+    :return: computer move 
     """
-    while True :
-        random_move = randint(1, 9)
-        if random_move in chosenFieldsX or random_move in chosenFieldsO: 
-            continue 
-        else:
-            break 
     
-    return random_move
+    move = 0
+    playerX = set(chosenFieldsX)
+    playerO = set(chosenFieldsO)
+    pathToWinX = []
+    pathToWinO = {1: -1, 2: -1, 3: -1, 4: -1, 5: -1, 6: -1, 7: -1, 8: -1, 9: -1}
+
+    if len(playerX) >= 2:
+        for i in range(1, 9):
+            winningPosition = set(winningScenarios[i])
+            movesToWinX = list(winningPosition.difference(playerX))
+            movesToWinO = list(winningPosition.difference(playerO))
+
+            if len(movesToWinX) == 1:
+                if movesToWinX[0] not in chosenFieldsO and 0 > pathToWinO[movesToWinX[0]]:
+                    pathToWinX.append(movesToWinX[0])
+                    pathToWinO[movesToWinX[0]] = 0
+            
+            if len(movesToWinO) == 1 and movesToWinO[0] not in chosenFieldsX:
+                pathToWinO[movesToWinO[0]] = 1
+
+        for k, v in pathToWinO.items():
+            if v == 1:
+                move = k 
+                break 
+
+    if move in chosenFieldsX:
+        move = 0
+
+    if move == 0 and len(pathToWinX) > 0:
+        move = pathToWinX[0]
+    elif move == 0:
+        while 1:
+            move = randint(1, 9)
+            if move in chosenFieldsX or move in chosenFieldsO: 
+                continue 
+            else:
+                break 
+    
+    return move
 
 
 def clearScreen():
-    """
-    It just clears screen, u know...
-
-    :return: void function
-    """
     if osName() == 'Windows':
         system('cls')
     elif osName() == 'Linux':
